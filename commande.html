@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Commande - Michael</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo Michael" class="logo" />
+    <h1>Commande</h1>
+    <a href="index.html" class="retour">Retour à l'accueil</a>
+  </header>
+
+  <main class="commande">
+    <div class="conteneur">
+      <h2>Votre panier</h2>
+      <ul id="liste-panier"></ul>
+      <p><strong>Total: <span id="total">0</span> €</strong></p>
+
+      <h2>Finaliser votre commande</h2>
+      <form id="form-commande">
+        <label>Nom :</label><input type="text" required /><br/>
+        <label>Email :</label><input type="email" required /><br/>
+        <label>Adresse :</label><input type="text" required /><br/>
+        <button type="submit">Passer la commande</button>
+      </form>
+    </div>
+  </main>
+
+  <div id="popup-ajout" class="popup">
+    <div class="popup-content">
+      <p id="message-ajout">Produit ajouté au panier !</p>
+      <button onclick="fermerPopup()">Fermer</button>
+    </div>
+  </div>
+
+  <script>
+    let panier = JSON.parse(localStorage.getItem("panier")) || [];
+    const liste = document.getElementById("liste-panier");
+    const totalSpan = document.getElementById("total");
+    let total = 0;
+
+    panier.forEach((item, index) => {
+      const li = document.createElement("li");
+      li.textContent = item.nom + " - " + item.prix + " € ";
+
+      const boutonSupprimer = document.createElement("button");
+      boutonSupprimer.textContent = "Retirer";
+      boutonSupprimer.onclick = function() {
+        panier.splice(index, 1);
+        localStorage.setItem("panier", JSON.stringify(panier));
+        location.reload();
+      };
+
+      li.appendChild(boutonSupprimer);
+      liste.appendChild(li);
+      total += item.prix;
+    });
+
+    totalSpan.textContent = total.toFixed(2);
+
+    document.getElementById("form-commande").addEventListener("submit", function(e) {
+      e.preventDefault();
+      alert("Commande envoyée avec succès !");
+      localStorage.removeItem("panier");
+      location.reload();
+    });
+
+    function afficherPopup(message) {
+      document.getElementById("message-ajout").textContent = message;
+      document.getElementById("popup-ajout").style.display = "block";
+    }
+
+    function fermerPopup() {
+      document.getElementById("popup-ajout").style.display = "none";
+    }
+  </script>
+</body>
+</html>

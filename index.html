@@ -1,0 +1,105 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Michael - Boutique</title>
+  <link rel="stylesheet" href="style1.css" />
+</head>
+<body>
+  <header>
+    <img src="logo.png" alt="Logo" class="logo" />
+    <h1>Michael</h1>
+    <nav>
+      <a href="#" onclick="afficherTousProduits()">Accueil</a>
+      <div class="menu">
+        <span>Homme</span>
+        <div class="submenu">
+          <a href="#" onclick="filtrerProduits('homme-accessoires')">Accessoires</a>
+          <a href="#" onclick="filtrerProduits('homme-colis')">Colis</a>
+          <a href="#" onclick="filtrerProduits('homme-chaussures')">Chaussures</a>
+        </div>
+      </div>
+      <div class="menu">
+        <span>Enfant</span>
+        <div class="submenu">
+          <a href="#" onclick="filtrerProduits('enfant-colis')">Colis</a>
+          <a href="#" onclick="filtrerProduits('enfant-chaussures')">Chaussures</a>
+          <a href="#" onclick="filtrerProduits('enfant-vetements')">Vêtements</a>
+          <a href="#" onclick="filtrerProduits('enfant-accessoires')">Accessoires</a>
+          <a href="#" onclick="filtrerProduits('enfant-jeux')">Jeux</a>
+        </div>
+      </div>
+      <a href="commande.html">Panier</a>
+    </nav>
+  </header>
+
+  <main>
+    <h2 id="titre-produit">Tous les produits</h2>
+    <div class="produits" id="liste-produits"></div>
+  </main>
+
+  <div id="popup-ajout" class="popup">
+    <div class="popup-content">
+      <p id="message-ajout">Produit ajouté au panier !</p>
+      <button onclick="fermerPopup()">Fermer</button>
+    </div>
+  </div>
+
+  <script>
+    const produits = [
+      { nom: "Montre Homme", prix: 30, image: "montre.jpg", categorie: "homme-accessoires" },
+      { nom: "Colis Homme", prix: 50, image: "colis-h.jpg", categorie: "homme-colis" },
+      { nom: "Chaussures Homme", prix: 70, image: "chaussures-h.jpg", categorie: "homme-chaussures" },
+      { nom: "Chaussures Enfant", prix: 35, image: "chaussures-e.jpg", categorie: "enfant-chaussures" },
+      { nom: "Colis Enfant", prix: 45, image: "colis-e.jpg", categorie: "enfant-colis" },
+      { nom: "Jeu éducatif", prix: 20, image: "jeu.jpg", categorie: "enfant-jeux" },
+      { nom: "Vêtement Enfant", prix: 25, image: "vetement.jpg", categorie: "enfant-vetements" },
+      { nom: "Sac Enfant", prix: 15, image: "sac.jpg", categorie: "enfant-accessoires" }
+    ];
+
+    function afficherTousProduits() {
+      document.getElementById("titre-produit").textContent = "Tous les produits";
+      afficherProduits(produits);
+    }
+
+    function filtrerProduits(categorie) {
+      const filtres = produits.filter(p => p.categorie === categorie);
+      document.getElementById("titre-produit").textContent = "Catégorie : " + categorie.replace("-", " ");
+      afficherProduits(filtres);
+    }
+
+    function afficherProduits(liste) {
+      const conteneur = document.getElementById("liste-produits");
+      conteneur.innerHTML = "";
+      liste.forEach(p => {
+        conteneur.innerHTML += `
+          <div class="produit">
+            <img src="${p.image}" alt="${p.nom}" />
+            <h3>${p.nom}</h3>
+            <p>${p.prix} €</p>
+            <button onclick="ajouterAuPanier('${p.nom}', ${p.prix})">Ajouter au panier</button>
+          </div>`;
+      });
+    }
+
+    function ajouterAuPanier(nom, prix) {
+      let panier = JSON.parse(localStorage.getItem("panier")) || [];
+      panier.push({ nom, prix });
+      localStorage.setItem("panier", JSON.stringify(panier));
+      afficherPopup(nom + " ajouté au panier !");
+    }
+
+    function afficherPopup(message) {
+      document.getElementById("message-ajout").textContent = message;
+      document.getElementById("popup-ajout").style.display = "block";
+    }
+
+    function fermerPopup() {
+      document.getElementById("popup-ajout").style.display = "none";
+    }
+
+    afficherTousProduits();
+  </script>
+</body>
+</html>
